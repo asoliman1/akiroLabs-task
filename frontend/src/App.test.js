@@ -1,20 +1,21 @@
-import React from 'react';
-import { render, fireEvent, waitFor, getByText } from '@testing-library/react';
-import App from './App';
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
+import App from "./App";
 
-describe('App component', () => {
-  it('renders without crashing', () => {
+describe("App component", () => {
+  it("renders without crashing", () => {
     render(<App />);
   });
 
-  it('generates a token on button click', async () => {
+  it("generates a token on button click", async () => {
     const { getByText } = render(<App />);
-    const generateButton = getByText('Generate Token');
+    const generateButton = screen.getByText(/learn react/i);
 
     fireEvent.click(generateButton);
 
     await waitFor(() => {
-      const tokenOutput = getByText(/^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/);
+      const tokenOutput = screen.getByText(
+        /^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/
+      );
       expect(tokenOutput).toBeInTheDocument();
     });
   });

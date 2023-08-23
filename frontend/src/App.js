@@ -1,24 +1,27 @@
-import React, { useState, useEffect } from "react";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {
-  Container,
-  TextField,
   Button,
-  Typography,
   List,
   ListItem,
   ListItemText,
-  Grid,
+  Divider,
+  TextField,
+  Typography,
+  AppBar,
+  Toolbar,
+  Box,
+  CssBaseline,
   Paper,
 } from "@mui/material";
-import { generateToken, validateToken } from "./tokenGenerator"; // Import your logic
-import { useStyles, MyRow, AnimatedIcon, MyCol   } from "./styles"; // Import your styles
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import React, { useEffect, useState } from "react";
 import "./App.css";
+import { AnimatedIcon } from "./styles"; // Import your styles
+import { generateToken, validateToken } from "./tokenGenerator"; // Import your logic
 
 function App() {
   const [availableDigits, setAvailableDigits] = useState("");
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState("No token set");
   const [totalTokens, setTotalTokens] = useState(0);
   const [validTokens, setValidTokens] = useState(0);
   const [validTokensList, setValidTokensList] = useState([]);
@@ -56,86 +59,91 @@ function App() {
 
   const isBtnDisabled = () => availableDigits == null || availableDigits === "";
 
-  const classes = useStyles();
-
   return (
-    <Container maxWidth="lg" className={classes.root}>
-      <Typography variant="h4" align="center">
-        Token Generator
-      </Typography>
-
-      <Grid container spacing={2} className={classes.container}>
-        <Grid item xs={12} sm={6} md={4}>
-          <MyRow>
-            <TextField
-              label="Available Digits"
-              variant="outlined"
-              fullWidth
-              value={availableDigits}
-              onChange={(e) =>
-                setAvailableDigits(e.target.value.replace(/[^0-9]/g, ""))
-              }
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              className={classes.generateButton}
-              onClick={generateSingleToken}
-              disabled={isBtnDisabled()}
-            >
-              Generate Token
-            </Button>
-            <Button
-              variant="outlined"
-              color="primary"
-              fullWidth
-              className={classes.generateButton}
-              onClick={startLoop}
-              disabled={isBtnDisabled()}
-            >
-              Start Loop
-            </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              fullWidth
-              onClick={stopLoop}
-              disabled={!isLooping}
-            >
-              Stop Loop
-            </Button>
-          </MyRow>
-        </Grid>
-        <Grid item xs={12} sm={6} md={8}>
-          <Paper className={classes.tokenOutput}>
-          </Paper>
-          <MyCol >
-          <Typography variant="body1">{token}</Typography>
-            <AnimatedIcon
-              className={isCorrectToken != null ? 'visible' : ''}
-            >
-              {isCorrectToken === true ? <CheckCircleOutlineIcon/>: <HighlightOffIcon/>}
-            </AnimatedIcon>
-          </MyCol>
-        </Grid>
-      </Grid>
-
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
-          <MyRow className={classes.statsPaper}>
-            <Typography variant="h6">Statistics</Typography>
-            <Typography variant="body1">
-              Total Tokens Generated: {totalTokens}
-            </Typography>
-            <Typography variant="body1">Valid Tokens: {validTokens}</Typography>
-          </MyRow>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Paper
-            className={`${classes.statsPaper} ${classes.validTokensPaper}`}
+    <Box sx={{ display: "flex" }}>
+      <CssBaseline />
+      <AppBar component="nav">
+        <Toolbar>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
           >
-            <Typography variant="h6">Valid Tokens</Typography>
+            Token validator
+          </Typography>
+          <Box sx={{ display: { xs: "none", sm: "block" } }}>
+            <Typography>Total Tokens Generated: {totalTokens}</Typography>
+            <Typography>Valid Tokens: {validTokens}</Typography>
+          </Box>
+        </Toolbar>
+      </AppBar>
+
+      <Box component="main" width="100%" sx={{ p: 3 }}>
+        <Toolbar />
+        <Box padding={2} width="100%">
+          <TextField
+            margin="normal"
+            label="Available Digits"
+            variant="outlined"
+            fullWidth
+            value={availableDigits}
+            onChange={(e) =>
+              setAvailableDigits(e.target.value.replace(/[^0-9]/g, ""))
+            }
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={generateSingleToken}
+            disabled={isBtnDisabled()}
+          >
+            Generate Token
+          </Button>
+        </Box>
+        <Divider />
+
+        <Box margin={3}>
+          <Typography variant="body1">
+            {token}
+            <AnimatedIcon className={isCorrectToken != null ? "visible" : ""}>
+              {isCorrectToken === true ? (
+                <CheckCircleOutlineIcon />
+              ) : (
+                <HighlightOffIcon />
+              )}
+            </AnimatedIcon>
+          </Typography>
+        </Box>
+        <Divider />
+
+        <Box margin={3}>
+          <Button
+            variant="outlined"
+            color="primary"
+            fullWidth
+            onClick={startLoop}
+            disabled={isBtnDisabled()}
+          >
+            Start Loop
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            fullWidth
+            onClick={stopLoop}
+            disabled={!isLooping}
+          >
+            Stop Loop
+          </Button>
+        </Box>
+        <Divider />
+
+        <Box padding={3}>
+          <Paper>
+            <Typography margin={3} variant="h5">
+              Valid Tokens
+            </Typography>
             <List>
               {validTokensList.map((token, index) => (
                 <ListItem key={index}>
@@ -144,9 +152,9 @@ function App() {
               ))}
             </List>
           </Paper>
-        </Grid>
-      </Grid>
-    </Container>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 
